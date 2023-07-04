@@ -93,49 +93,63 @@ export default function Home() {
   }, [])
 
   return (
-    <section className="flex min-h-screen flex-col items-center">
-      <Image
-        className="m-8"
-        src={'/spn-logo-3.png'}
-        alt={'Supernatural Logo'}
-        height={200}
-        width={200}
-      />
-      <button
-        className="flex items-center gap-2 rounded bg-white px-4 py-2 text-black hover:bg-gray-300"
-        onClick={handleNewQuotes}
-      >
-        <p>New Quotes </p>
-        <IconShuffle />
-      </button>
-      {quotes.length > 0 && (
-        <div>
-          {quotes.map((quote, index) => (
-            <div
-              className="m-4 flex flex-col gap-2 rounded-md border p-2"
-              key={index}
-            >
-              <div className="flex items-center gap-2">
-                {quote.character.img && (
-                  <Image
-                    className="h-16 w-16 rounded-full border object-cover"
-                    src={quote.character.img}
-                    // I'm checking with the API developer about the images
-                    // https://linktr.ee/lidiacodes
-                    // src="/user.png"
-                    alt={quote.character.name}
-                    height={500}
-                    width={500}
-                  />
-                )}
-                <h2 className="text-white">{quote.character.name}</h2>
-              </div>
-              <p className="text-white">{quote.quote}</p>
-            </div>
-          ))}
+    <main>
+      <section className="flex min-h-screen flex-col items-center md:mx-16 md:flex-row">
+        <div className="flex flex-col items-center justify-center text-center md:flex-1">
+          <Image
+            className="m-8"
+            src={'/spn-logo-3.png'}
+            alt={'Supernatural Logo'}
+            height={200}
+            width={200}
+          />
+          <h1 className="text-2xl font-medium text-white">
+            Supernatural Quotes!
+          </h1>
+          <p className="mb-2 text-white">
+            Created by hunters
+            <br />
+            For hunters fans
+          </p>
+          <button
+            className="flex items-center gap-2 rounded bg-white px-4 py-2 text-black hover:bg-gray-300"
+            onClick={handleNewQuotes}
+          >
+            <p>New Quotes </p>
+            <IconShuffle />
+          </button>
         </div>
-      )}
-      <div className="mx-auto mt-12 flex flex-col items-center justify-start">
+        <div>
+          {quotes.length > 0 && (
+            <div className="flex max-w-[500px] flex-col">
+              {quotes.map((quote, index) => (
+                <div
+                  className="m-4 flex flex-col gap-2 rounded-md border p-2"
+                  key={index}
+                >
+                  <div className="flex items-center gap-2">
+                    {quote.character.img && (
+                      <Image
+                        className="h-16 w-16 rounded-full border object-cover"
+                        src={quote.character.img}
+                        // I'm checking with the API developer about the images
+                        // https://linktr.ee/lidiacodes
+                        // src="/user.png"
+                        alt={quote.character.name}
+                        height={500}
+                        width={500}
+                      />
+                    )}
+                    <h2 className="text-white">{quote.character.name}</h2>
+                  </div>
+                  <p className="text-white">{quote.quote}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+      <footer className="mx-auto mt-4 flex flex-col items-center justify-start">
         <h2 className="text-white">Talk to the developers:</h2>,
         <Link href={'https://linktr.ee/lidiacodes'}>
           <div className="flex items-center justify-center gap-1">
@@ -161,7 +175,7 @@ export default function Home() {
             <h3 className="text-white">Filipe Bacof - Website Developer</h3>
           </div>
         </Link>
-      </div>
-    </section>
+      </footer>
+    </main>
   )
 }
