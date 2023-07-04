@@ -1,11 +1,14 @@
 'use client'
 
+import IconShuffle from '@/icons/IconShuffle'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 interface Character {
   name: string
   id: string
+  img?: string
 }
 
 interface Quote {
@@ -31,7 +34,12 @@ export default function Home() {
           ([key, value]) =>
             key.startsWith('line_') && typeof value === 'object',
         )
-        .map(([key, value]) => value as Quote)
+        .map(([key, value]) => {
+          const quote: Quote = value as Quote
+          quote.quote = quote.quote.replace(/&#34;/g, '"')
+          return quote
+        })
+      console.log(quoteList)
       return quoteList
     } else {
       console.log('Error!')
@@ -39,11 +47,40 @@ export default function Home() {
     }
   }
 
+  async function fetchCharacterImage(id: string): Promise<string> {
+    const APIResponse = await fetch(
+      `https://supernatural-quotes-api.cyclic.app/characters/${id}`,
+    )
+    if (APIResponse.status === 200) {
+      const data = await APIResponse.json()
+      return data.img
+    } else {
+      console.log('Error!')
+      return ''
+    }
+  }
+
+  const handleNewQuotes = async () => {
+    const randomQuotes = await fetchRandomQuotes()
+    const quotesWithImages = await Promise.all(
+      randomQuotes.map(async (quote) => {
+        const img = await fetchCharacterImage(quote.character.id)
+        return { ...quote, character: { ...quote.character, img } }
+      }),
+    )
+    setQuotes(quotesWithImages)
+  }
+
   useEffect(() => {
     const getQuotes = async () => {
       const randomQuotes = await fetchRandomQuotes()
-      console.log(randomQuotes)
-      setQuotes(randomQuotes)
+      const quotesWithImages = await Promise.all(
+        randomQuotes.map(async (quote) => {
+          const img = await fetchCharacterImage(quote.character.id)
+          return { ...quote, character: { ...quote.character, img } }
+        }),
+      )
+      setQuotes(quotesWithImages)
     }
 
     getQuotes()
@@ -58,18 +95,33 @@ export default function Home() {
         height={200}
         width={200}
       />
+      <button
+        className="flex items-center gap-2 rounded bg-white px-4 py-2 text-black hover:bg-gray-300"
+        onClick={handleNewQuotes}
+      >
+        <p>New Quotes </p>
+        <IconShuffle />
+      </button>
       {quotes.length > 0 && (
         <div>
           {quotes.map((quote, index) => (
-            <div className="m-4 flex flex-col gap-2 border p-2" key={index}>
+            <div
+              className="m-4 flex flex-col gap-2 rounded-md border p-2"
+              key={index}
+            >
               <div className="flex items-center gap-2">
-                <Image
-                  className="rounded-full border"
-                  src={'/user.png'}
-                  alt={'user'}
-                  height={40}
-                  width={40}
-                />
+                {quote.character.img && (
+                  <Image
+                    className="rounded-full border"
+                    // src={quote.character.img}
+                    // I'm checking with the API developer about the images
+                    // https://linktr.ee/lidiacodes
+                    src="/user.png"
+                    alt={quote.character.name}
+                    height={40}
+                    width={40}
+                  />
+                )}
                 <h2 className="text-white">{quote.character.name}</h2>
               </div>
               <p className="text-white">{quote.quote}</p>
@@ -77,6 +129,21 @@ export default function Home() {
           ))}
         </div>
       )}
+      <div className="mt-12">
+        <h2 className="text-white">Talk to the API Developer:</h2>,
+        <Link href={'https://linktr.ee/lidiacodes'}>
+          <div className="flex items-center justify-center gap-2">
+            <Image
+              className="rounded-full"
+              src="https://avatars.githubusercontent.com/LidiaKovac"
+              alt={'Lidia Kovac Github Picture'}
+              height={40}
+              width={40}
+            />
+            <h3 className="text-white">Lidia Kovac</h3>
+          </div>
+        </Link>
+      </div>
     </section>
   )
 }
