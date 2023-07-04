@@ -65,7 +65,10 @@ export default function Home() {
     const quotesWithImages = await Promise.all(
       randomQuotes.map(async (quote) => {
         const img = await fetchCharacterImage(quote.character.id)
-        return { ...quote, character: { ...quote.character, img } }
+        if (img) {
+          quote.character.img = img.replace('/images/', '/assets/')
+        }
+        return quote
       }),
     )
     setQuotes(quotesWithImages)
@@ -77,7 +80,10 @@ export default function Home() {
       const quotesWithImages = await Promise.all(
         randomQuotes.map(async (quote) => {
           const img = await fetchCharacterImage(quote.character.id)
-          return { ...quote, character: { ...quote.character, img } }
+          if (img) {
+            quote.character.img = img.replace('/images/', '/assets/')
+          }
+          return quote
         }),
       )
       setQuotes(quotesWithImages)
@@ -112,14 +118,14 @@ export default function Home() {
               <div className="flex items-center gap-2">
                 {quote.character.img && (
                   <Image
-                    className="rounded-full border"
-                    // src={quote.character.img}
+                    className="h-16 w-16 rounded-full border object-cover"
+                    src={quote.character.img}
                     // I'm checking with the API developer about the images
                     // https://linktr.ee/lidiacodes
-                    src="/user.png"
+                    // src="/user.png"
                     alt={quote.character.name}
-                    height={40}
-                    width={40}
+                    height={500}
+                    width={500}
                   />
                 )}
                 <h2 className="text-white">{quote.character.name}</h2>
@@ -129,10 +135,10 @@ export default function Home() {
           ))}
         </div>
       )}
-      <div className="mt-12">
-        <h2 className="text-white">Talk to the API Developer:</h2>,
+      <div className="mx-auto mt-12 flex flex-col items-center justify-start">
+        <h2 className="text-white">Talk to the developers:</h2>,
         <Link href={'https://linktr.ee/lidiacodes'}>
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-center justify-center gap-1">
             <Image
               className="rounded-full"
               src="https://avatars.githubusercontent.com/LidiaKovac"
@@ -140,7 +146,19 @@ export default function Home() {
               height={40}
               width={40}
             />
-            <h3 className="text-white">Lidia Kovac</h3>
+            <h3 className="text-white">Lidia Kovac - API Developer</h3>
+          </div>
+        </Link>
+        <Link href={'https://portifolio-filipe-bacof.vercel.app'}>
+          <div className="flex items-center justify-center gap-1">
+            <Image
+              className="rounded-full"
+              src="https://avatars.githubusercontent.com/Filipe-Bacof"
+              alt={'Filipe Bacof Github Picture'}
+              height={40}
+              width={40}
+            />
+            <h3 className="text-white">Filipe Bacof - Website Developer</h3>
           </div>
         </Link>
       </div>
